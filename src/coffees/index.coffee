@@ -1,2 +1,1 @@
-alert 'hello'
-alert 'world'
+import './styles/master.css'

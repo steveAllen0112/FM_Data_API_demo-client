@@ -10,7 +10,7 @@ cache		= require 'gulp-cached'
 
 gulp.task 'unbuild', ->
 	del [
-		'./build/**/*'
+		'./dist/**/*'
 	]
 
 gulp.task 'compile-coffee', ->
@@ -19,20 +19,20 @@ gulp.task 'compile-coffee', ->
 		.pipe sourcemaps.init()
 		.pipe coffee bare: true
 		.pipe sourcemaps.write './maps'
-		.pipe gulp.dest './build/js/'
+		.pipe gulp.dest './dist/js/'
 	
 gulp.task 'compile-pug', ->
-	gulp.src 'pugs/**/*.pug', base: './src/pugs/'
+	gulp.src './src/pugs/**/*.pug', base: './src/pugs/'
 		.pipe cache 'pug'
 		.pipe sourcemaps.init()
 		.pipe pug pretty: '	'
 		.pipe sourcemaps.write './maps'
-		.pipe gulp.dest './build/'
+		.pipe gulp.dest './dist/'
 
 gulp.task 'compile-sass', ->
-	gulp.src('sass/**/*.scss', base: './src/sass/')
+	gulp.src('./src/sass/**/*.scss', base: './src/sass/')
 		.pipe scss().on('error', scss.logError)
-		.pipe gulp.dest('./build/styles')
+		.pipe gulp.dest('./dist/styles')
 		
 gulp.task 'watch', ->
 	gulp.watch 'src/coffees/**/*.coffee', gulp.parallel 'compile-coffee'
