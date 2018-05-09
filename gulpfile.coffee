@@ -8,29 +8,29 @@ cache		= require 'gulp-cached'
 #concat		= require 'gulp-concat'
 
 gulp.task 'compile-coffee', ->
-	gulp.src 'coffees/**/*.coffee', base: './coffees/'
+	gulp.src 'coffees/**/*.coffee', base: './src/coffees/'
 		.pipe cache 'coffees'
 		.pipe sourcemaps.init()
 		.pipe coffee bare: true
-		.pipe sourcemaps.write './maps'
-		.pipe gulp.dest './includes/js/'
+		.pipe sourcemaps.write './build/maps'
+		.pipe gulp.dest './build/js/'
 	
 gulp.task 'compile-pug', ->
-	gulp.src 'templates/**/*.pug', base: './templates/'
+	gulp.src 'pugs/**/*.pug', base: './src/pugs/'
 		.pipe cache 'pug'
 		.pipe sourcemaps.init()
 		.pipe pug pretty: '	'
-		.pipe sourcemaps.write './maps'
-		.pipe gulp.dest './'
+		.pipe sourcemaps.write './build/maps'
+		.pipe gulp.dest './build/'
 
-gulp.task 'compile-scss', ->
-	gulp.src('./includes/css/scss/**/*.scss')
+gulp.task 'compile-sass', ->
+	gulp.src('sass/**/*.scss', base: './src/sass/')
 		.pipe scss().on('error', scss.logError)
-		.pipe gulp.dest('./includes/css')
+		.pipe gulp.dest('./build/styles')
 		
 gulp.task 'watch', ->
-	gulp.watch 'coffees/**/*.coffee', ['compile-coffee']
-	gulp.watch 'templates/**/*.pug', ['compile-pug']
-	gulp.watch './includes/css/scss/**/*.scss', ['compile-scss']
+	gulp.watch 'src/coffees/**/*.coffee', ['compile-coffee']
+	gulp.watch 'src/templates/**/*.pug', ['compile-pug']
+	gulp.watch 'src/sass/**/*.scss', ['compile-sass']
 	
-gulp.task 'default', [ 'compile-pug', 'compile-coffee' , 'compile-scss', 'watch' ]
+gulp.task 'default', [ 'compile-pug', 'compile-coffee' , 'compile-sass', 'watch' ]
