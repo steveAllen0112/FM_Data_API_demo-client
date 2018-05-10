@@ -4,7 +4,45 @@ html(lang="en")
 		meta(charset="UTF-8")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0")
 		meta(http-equiv="X-UA-Compatible", content="ie=edge")
-		title FM 17 Data API Demo
+
+		title FM 17 Data API Demo - Contact Form
+
+		link(
+			rel="stylesheet",
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css",
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm",
+			crossorigin="anonymous")
+		link(rel='stylesheet', type='text/css' href='./styles/master.css')
 	body
+		.container-fluid.main-wrapper
+			nav.navbar.navbar-primary.bg-primary
+				span.navbar-brand.mb-0.h1 Your Excellent Website
+			.row.justify-content-center.alighn-items-center.pt-4
+				.jumbotron.bg-light
+					h1.display-4 You will be Awesome!
+					p.lead This is a simple Contact Form.  This page talks to FileMaker without PHP.
+					hr.my-5
+					form#contactForm.card(
+						name="contactForm",
+						action="./thanks.html",
+						method="post",
+						novalidate
+						)
+						h3.card-header.bg-info.text-light Contact Form
+						.card-body
+							fieldset.card-text
+								.form-group
+									label(for="name") Name
+									input#name.form-control(type="text", placeholder="Enter Your Name", required)
+								.form-group
+									label(for="email") Email Address
+									input#email.form-control(type="email", aria-describedby="emailHelp", placeholder="Enter email", required)
+									small#emailHelp.form-text.text-muted We&apos;ll never share it!
+						fieldset.card-footer.text-right.bg-secondary.text-light
+							button#submitBtn.btn.btn-success(type='submit')
+								span#submitBtnRegularText Submit
+								blink#submitBtnSubmittingText.hide Submitting...
+			.row.half-height
+
 		script(src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js")
-		script(src="js/index.js")
+		script(src="./js/index.js")

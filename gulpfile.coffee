@@ -36,7 +36,7 @@ gulp.task 'compile-sass', ->
 		
 gulp.task 'watch', ->
 	gulp.watch 'src/coffees/**/*.coffee', gulp.parallel 'compile-coffee'
-	gulp.watch 'src/templates/**/*.pug', gulp.parallel 'compile-pug'
+	gulp.watch 'src/pugs/**/*.pug', gulp.parallel 'compile-pug'
 	gulp.watch 'src/sass/**/*.scss', gulp.parallel 'compile-sass'
 
 gulp.task 'build', gulp.parallel 'compile-pug', 'compile-coffee' , 'compile-sass'
