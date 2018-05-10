@@ -1,0 +1,19 @@
+html,
+body,
+.main-wrapper {
+  height: 100vh !important; }
+
+blink {
+  -webkit-animation-name: blink !important;
+  -webkit-animation-iteration-count: infinite !important;
+  -webkit-animation-timing-function: cubic-bezier(1, 0, 0, 1) !important;
+  -webkit-animation-duration: 1s; }
+
+.full-height {
+  height: 100% !important; }
+
+.half-height {
+  height: 50% !important; }
+
+.hide {
+  display: none; }

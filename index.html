@@ -4,10 +4,43 @@
 		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-		<title>FM 17 Data API Demo</title>
+		<title>FM 17 Data API Demo - Contact Form</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"/>
+		<link rel="stylesheet" type="text/css" href="./styles/master.css"/>
 	</head>
 	<body>
+		<div class="container-fluid main-wrapper">
+			<nav class="navbar navbar-primary bg-primary"><span class="navbar-brand mb-0 h1">Your Excellent Website</span></nav>
+			<div class="row justify-content-center alighn-items-center pt-4">
+				<div class="jumbotron bg-light">
+					<h1 class="display-4">You will be Awesome!</h1>
+					<p class="lead">This is a simple Contact Form.  This page talks to FileMaker without PHP.</p>
+					<hr class="my-5"/>
+					<form class="card" id="contactForm" name="contactForm" action="./thanks.html" method="post" novalidate="novalidate">
+						<h3 class="card-header bg-info text-light">Contact Form</h3>
+						<div class="card-body">
+							<fieldset class="card-text">
+								<div class="form-group">
+									<label for="name">Name</label>
+									<input class="form-control" id="name" type="text" placeholder="Enter Your Name" required="required"/>
+								</div>
+								<div class="form-group">
+									<label for="email">Email Address</label>
+									<input class="form-control" id="email" type="email" aria-describedby="emailHelp" placeholder="Enter email" required="required"/><small class="form-text text-muted" id="emailHelp">We&apos;ll never share it!</small>
+								</div>
+							</fieldset>
+						</div>
+						<fieldset class="card-footer text-right bg-secondary text-light">
+							<button class="btn btn-success" id="submitBtn" type="submit"><span id="submitBtnRegularText">Submit</span>
+								<blink class="hide" id="submitBtnSubmittingText">Submitting...</blink>
+							</button>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			<div class="row half-height"></div>
+		</div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.4/fetch.min.js"></script>
-		<script src="js/index.js"></script>
+		<script src="./js/index.js"></script>
 	</body>
 </html>
