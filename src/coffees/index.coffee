@@ -37,20 +37,34 @@ onSubmit = (event)->
 
 	toggleSubmitButtonEnabled()
 
-	# Do ajaxy stuff
-	
+	# prep the entered data
+	fm.contact.email = emailField.value
+	fm.contact.name.set nameField
 
-	toggleSubmitButtonEnabled()
-	return false;
+	# Do ajaxy stuff
+	fm.contact.add()
+		.then((response)->
+			window.location = './thanks.html'
+		)
+		.catch((error)->
+			console.log('error', error)
+			toggleSubmitButtonEnabled()
+			alert "Error.  See console log in debug mode."
+		)
+	if event
+		event.preventDefault()
+	return false
 
 form.addEventListener 'submit', onSubmit, false
 apiRoot = '/fmi/data/v1/databases/'
 fm =
 	host: 'https://rccbox.fmi-beta.filemaker-cloud.com',
 	application: 'FMSP_5_English'
+	base: ->
+		this.host + apiRoot + this.application + '/'
 	auth:
-		username: ''
-		password: ''
+		username: 'web_create_contact_only'
+		password: '12345'
 		token:
 			value: ''
 			obtained: null
@@ -65,14 +79,19 @@ fm =
 				return no
 			obtain: ->
 				if this.isExpired()
-					p = fetch this.host + apiRoot + this.application + '/sessions',
+					authString = btoa([fm.auth.username, fm.auth.password].join(':'))
+					console.log('created authString for token request', authString)
+					headers =
+						'Authorization': 'Bearer ' + authString
+						'Content-Type': 'application/json'
+					headerObj = new Headers(headers)
+					console.log('created headers for token request', headers, [...headerObj.entries()])
+					p = fetch fm.base() + 'sessions',
 						method: 'POST'
-						headers: new Headers([
-							['Authorization', 'Bearer ' + btoa([fm.auth.username, fm.auth.password].join(':'))],
-							['Content-Type', 'application/json']
-						])
+						headers: headerObj
 						body: '{}'
 						cache: 'no-cache'
+						credentials: 'include'
 					.then((response)->
 						if not response.ok
 							throw response
@@ -94,7 +113,7 @@ fm =
 					)
 			destroy: ->
 				return yes if this.isExpired() 
-				p = fetch this.host + apiRoot + this.application + '/sessions',
+				p = fetch fm.host + apiRoot + fm.application + '/sessions',
 						method: 'DELETE'
 						headers: new Headers([
 							['Authorization', 'Bearer ' + this.value ],
@@ -102,22 +121,39 @@ fm =
 						])
 						body: '{}'
 						cache: 'no-cache'
+						mode: 'no-cors'
 	layouts:
-		contacts: ''
+		contacts: 'L40_CONTACTS_Data_Entry'
 	
 	contact:
+		name:
+			first: ''
+			last: ''
+			set: (nameField)->
+				nameArr = nameField.value.split ' '
+				if nameArr.lengh > 1
+					this.last = nameArr.splice(-1)
+				this.first = nameArr.join ' '
+		email: ''
 		add: ->
-			p = fetch this.host + apiRoot + this.application + '/sessions',
-	addNewContact: ->
-		this.token.obtain()
-		.then((token)->
-			p = fetch this.host + apiRoot + this.application + '/layouts/' + this.layouts.contacts,
-					method: 'POST'
-					headers: new Headers([
-						['Authorization', 'Bearer ' + token ],
-						['Content-Type', 'application/json']
-					])
-					body: '{}'
-					cache: 'no-cache'
-		)
-			
+			fm.auth.token.obtain()
+				.then((token)->
+					payload = JSON.stringify(
+							"Name_First": fm.contact.first
+							"Name_Last": fm.contact.last
+							"Email": fm.contact.email
+						, true)
+					p = fetch fm.base() + 'layouts/' + fm.layouts.contacts + '/records',
+							method: 'POST'
+							headers: new Headers([
+								['Authorization', 'Bearer ' + token ],
+								['Content-Type', 'application/json']
+							])
+							body: payload
+							cache: 'no-cache'
+							mode: 'no-cors'
+					
+					fm.auth.token.destroy()
+
+					return p
+				)
