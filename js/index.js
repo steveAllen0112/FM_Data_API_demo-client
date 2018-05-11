@@ -49,8 +49,20 @@ onSubmit = function(event) {
     return false;
   }
   toggleSubmitButtonEnabled();
+  // prep the entered data
+  fm.contact.email = emailField.value;
+  fm.contact.name.set(nameField);
   // Do ajaxy stuff
-  toggleSubmitButtonEnabled();
+  fm.contact.add().then(function(response) {
+    return window.location = './thanks.html';
+  }).catch(function(error) {
+    console.log('error', error);
+    toggleSubmitButtonEnabled();
+    return alert("Error.  See console log in debug mode.");
+  });
+  if (event) {
+    event.preventDefault();
+  }
   return false;
 };
 
@@ -61,9 +73,12 @@ apiRoot = '/fmi/data/v1/databases/';
 fm = {
   host: 'https://rccbox.fmi-beta.filemaker-cloud.com',
   application: 'FMSP_5_English',
+  base: function() {
+    return this.host + apiRoot + this.application + '/';
+  },
   auth: {
-    username: '',
-    password: '',
+    username: 'web_create_contact_only',
+    password: '12345',
     token: {
       value: '',
       obtained: null,
@@ -81,13 +96,22 @@ fm = {
         return false;
       },
       obtain: function() {
-        var p;
+        var authString, headerObj, headers, p;
         if (this.isExpired()) {
-          p = fetch(this.host + apiRoot + this.application + '/sessions', {
+          authString = btoa([fm.auth.username, fm.auth.password].join(':'));
+          console.log('created authString for token request', authString);
+          headers = {
+            'Authorization': 'Bearer ' + authString,
+            'Content-Type': 'application/json'
+          };
+          headerObj = new Headers(headers);
+          console.log('created headers for token request', headers, [...headerObj.entries()]);
+          p = fetch(fm.base() + 'sessions', {
             method: 'POST',
-            headers: new Headers([['Authorization', 'Bearer ' + btoa([fm.auth.username, fm.auth.password].join(':'))], ['Content-Type', 'application/json']]),
+            headers: headerObj,
             body: '{}',
-            cache: 'no-cache'
+            cache: 'no-cache',
+            credentials: 'include'
           }).then(function(response) {
             if (!response.ok) {
               throw response;
@@ -110,34 +134,52 @@ fm = {
         if (this.isExpired()) {
           return true;
         }
-        return p = fetch(this.host + apiRoot + this.application + '/sessions', {
+        return p = fetch(fm.host + apiRoot + fm.application + '/sessions', {
           method: 'DELETE',
           headers: new Headers([['Authorization', 'Bearer ' + this.value], ['Content-Type', 'application/json']]),
           body: '{}',
-          cache: 'no-cache'
+          cache: 'no-cache',
+          mode: 'no-cors'
         });
       }
     }
   },
   layouts: {
-    contacts: ''
+    contacts: 'L40_CONTACTS_Data_Entry'
   },
   contact: {
+    name: {
+      first: '',
+      last: '',
+      set: function(nameField) {
+        var nameArr;
+        nameArr = nameField.value.split(' ');
+        if (nameArr.lengh > 1) {
+          this.last = nameArr.splice(-1);
+        }
+        return this.first = nameArr.join(' ');
+      }
+    },
+    email: '',
     add: function() {
-      var p;
-      return p = fetch(this.host + apiRoot + this.application + '/sessions');
-    }
-  },
-  addNewContact: function() {
-    return this.token.obtain().then(function(token) {
-      var p;
-      return p = fetch(this.host + apiRoot + this.application + '/layouts/' + this.layouts.contacts, {
-        method: 'POST',
-        headers: new Headers([['Authorization', 'Bearer ' + token], ['Content-Type', 'application/json']]),
-        body: '{}',
-        cache: 'no-cache'
+      return fm.auth.token.obtain().then(function(token) {
+        var p, payload;
+        payload = JSON.stringify({
+          "Name_First": fm.contact.first,
+          "Name_Last": fm.contact.last,
+          "Email": fm.contact.email
+        }, true);
+        p = fetch(fm.base() + 'layouts/' + fm.layouts.contacts + '/records', {
+          method: 'POST',
+          headers: new Headers([['Authorization', 'Bearer ' + token], ['Content-Type', 'application/json']]),
+          body: payload,
+          cache: 'no-cache',
+          mode: 'no-cors'
+        });
+        fm.auth.token.destroy();
+        return p;
       });
-    });
+    }
   }
 };
 
