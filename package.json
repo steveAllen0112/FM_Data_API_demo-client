@@ -6,6 +6,9 @@
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
+	"scripts": {
+		"deploy": "git subtree push --prefix dist origin gh-pages"
+	},
 	"dependencies": {
 		"whatwg-fetch": "^2.0.4"
 	},
