@@ -38,6 +38,14 @@ fieldIsValid = (field)->
 		field.classList.remove 'is-invalid'
 		return true
 
+api =
+	base_uri: 'http://dbw05.atrcc.com/FM17_Data_API_demo-middleman/public/index.php'
+
+app =
+	project: 'FM17_REST_DEMO'
+	environment: 'DEV-LOCAL'
+	version: 'v1.0.0'
+
 contact =
 	name:
 		first: ''
@@ -56,11 +64,13 @@ contact =
 		
 		payloadStr = JSON.stringify payload
 
-		p = fetch 'http://localhost:8080/contacts',
+		p = fetch api.base_uri + '/contacts',
 				method: 'POST'
 				headers: new Headers([
 					['Content-Type', 'application/json']
-					['X-RCC-PROJECT', 'FM17_REST_DEMO']
+					['X-RCC-PROJECT', app.project ]
+					['X-RCC-ENVIRONMENT', app.environment ]
+					['X-RCC-VERSION', app.version ]
 				])
 				body: payloadStr
 				cache: 'no-cache'
