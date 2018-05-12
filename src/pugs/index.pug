@@ -40,8 +40,14 @@ html(lang="en")
 								.form-group
 									label(for="email") Email Address
 									input#email.form-control(type="email", aria-describedby="emailHelp", placeholder="Enter email", required)
-									small#emailHelp.form-text.text-muted We&apos;ll never share it!
-								#errorMessage.alert.alert-danger.hide(role="alert")
+									small#emailHelp.form-text.text-muted We&apos;ll never share it!\
+							hr.my-3
+							fieldset.card-text
+								.input-group
+									.custom-file
+										label(for="photo") Photo (optional)
+										input#photo.form-control(type="file", placeholder="Choose file")
+								#errorMessage.alert.alert-danger.hide.mt-3(role="alert")
 						fieldset.card-footer.text-right.bg-secondary.text-light
 							button#submitBtn.btn.btn-success(type='submit')
 								span#submitBtnRegularText Submit

@@ -1,6 +1,7 @@
 form = document.getElementById 'contactForm'
 nameField = document.getElementById 'name'
 emailField = document.getElementById 'email'
+photoField = document.getElementById 'photo'
 submitBtn = document.getElementById 'submitBtn'
 submitBtnRegularText = document.getElementById 'submitBtnRegularText'
 submitBtnSubmittingText = document.getElementById 'submitBtnSubmittingText'
@@ -39,7 +40,8 @@ fieldIsValid = (field)->
 		return true
 
 api =
-	base_uri: 'https://dbw05.atrcc.com/FM17_Data_API_demo-middleman/public/index.php'
+	base_uri: 'http://localhost:8080'
+	# base_uri: 'https://dbw05.atrcc.com/FM17_Data_API_demo-middleman/public/index.php'
 
 app =
 	project: 'FM17_REST_DEMO'
@@ -57,22 +59,22 @@ contact =
 			this.first = nameArr.join ' '
 	email: ''
 	add: ->
-		payload = 
-			"name_first": this.name.first
-			"name_last": this.name.last
-			"email": this.email
-		
-		payloadStr = JSON.stringify payload
+		formData = new FormData()
+		formData.append "name_first", this.name.first
+		formData.append "name_last", this.name.last
+		formData.append "email", this.email
+
+		if photoField.value isnt ""
+			formData.append 'photo', photoField.files[0]
 
 		p = fetch api.base_uri + '/contacts',
 				method: 'POST'
 				headers: new Headers([
-					['Content-Type', 'application/json']
 					['X-RCC-PROJECT', app.project ]
 					['X-RCC-ENVIRONMENT', app.environment ]
 					['X-RCC-VERSION', app.version ]
 				])
-				body: payloadStr
+				body: formData
 				cache: 'no-cache'
 		return p
 
@@ -90,7 +92,7 @@ onSubmit = (event)->
 	# prep the entered data
 	contact.email = emailField.value
 	contact.name.set nameField
-
+	
 	# Do ajaxy stuff
 	contact.add()
 		.then((response)->
@@ -104,7 +106,10 @@ onSubmit = (event)->
 		.catch((error)->
 			console.log 'error', error
 			toggleSubmitButtonEnabled()
-			setError error
+			setError error		
+			if event
+				event.preventDefault()
+			return false
 		)
 	if event
 		event.preventDefault()
