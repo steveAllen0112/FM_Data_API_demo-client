@@ -52,7 +52,7 @@ fieldIsValid = function(field) {
 };
 
 api = {
-  base_uri: 'http://dbw05.atrcc.com/FM17_Data_API_demo-middleman/public/index.php'
+  base_uri: 'https://dbw05.atrcc.com/FM17_Data_API_demo-middleman/public/index.php'
 };
 
 app = {
