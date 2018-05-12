@@ -15,12 +15,14 @@ submitBtnSubmittingText = document.getElementById('submitBtnSubmittingText');
 errorMessage = document.getElementById('errorMessage');
 
 setError = function(message) {
+  console.log('setting error', message, errorMessage);
   errorMessage.innerHTML = message;
-  if (message.length) {
-    if (errorMessage.classList.contains('hide')) {
-      return el.classList.remove('hide');
-    }
+  if (message) {
+    errorMessage.classList.remove('hide');
+  } else {
+    errorMessage.classList.add('hide');
   }
+  return console.log('error set', errorMessage.classList.contains('hide'));
 };
 
 toggleClass = function(el, cls) {
