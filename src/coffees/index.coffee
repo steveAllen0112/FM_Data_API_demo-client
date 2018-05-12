@@ -8,10 +8,14 @@ submitBtnSubmittingText = document.getElementById 'submitBtnSubmittingText'
 errorMessage = document.getElementById 'errorMessage'
 
 setError = (message)->
+	console.log 'setting error', message, errorMessage
 	errorMessage.innerHTML = message
-	if message.length
-		if errorMessage.classList.contains 'hide'
-			el.classList.remove 'hide'
+	if message
+		errorMessage.classList.remove 'hide'
+	else
+		errorMessage.classList.add 'hide'
+	console.log 'error set', errorMessage.classList.contains('hide')
+		
 
 toggleClass = (el, cls)->
 	if el.classList.contains cls
